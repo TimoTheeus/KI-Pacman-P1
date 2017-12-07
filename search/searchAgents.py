@@ -484,7 +484,14 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return len(foodGrid.asList())
+    # initiate distance so that 
+    distance = 0
+    # check each food pellet in the grid by converting it to list
+    for i in foodGrid.asList():
+        # check what the maximum distance is by using our position and the position of the food pellet
+        distance = max(distance, util.manhattanDistance(position, i))
+    # return the distance
+    return distance
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -515,7 +522,9 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+         # BFS collapses layer after layer, so bfs finds the closest dot
+        return search.bfs(problem)
+
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -548,10 +557,16 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         The state is Pacman's position. Fill this in with a goal test that will
         complete the problem definition.
         """
-        x,y = state
+        x, y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        #check if x, y are in the same position as a food in the food-list
+        if (x, y) in self.food.asList():
+            # if so return True
+            return True
+        
+        # else return false
+        return False
 
 def mazeDistance(point1, point2, gameState):
     """
