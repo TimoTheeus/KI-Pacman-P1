@@ -87,93 +87,127 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    
+    # get the start state from the problem
     startState = problem.getStartState()
-
+    # dfs uses last in first out so use a stack
     fringe = util.Stack()
+    # make a node with the current state (startstate) and an empty list for the direction path
     node = (startState, [])
+    # push the node on the fringe
     fringe.push(node)
-
+    # make a list with states we already have expanded
     expanded = []
 
+    #check whether the fringe is empty
     while not fringe.isEmpty():
-
+        # get the next state and the direction path we want to check
         (state, directions) = fringe.pop()
 
+        # check if the state is the goal, if so return the direction path
         if problem.isGoalState(state):
             return directions
 
+        # check if we already expanded the state, go back to the while statement
         if state not in expanded:
+            # if not expanded, append to the expanded list
             expanded.append(state)
-            
+            # get the successors of the state
             for (successorState, successorDirection, successorCost) in problem.getSuccessors(state):
+                # if a successor is not expanded yet
                 if successorState not in expanded:
+                    # copy the direction path and add the direction of the successor path
                     newDirections = list(directions)
                     newDirections.append(successorDirection)
+                    # make a new node with the successor state and newly made direction path and push it to the fringe
                     newNode = (successorState, newDirections)
                     fringe.push(newNode)
 
+    # if the fringe is empty return nothing (no solution found)
     return []
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-
+    # get the start state from the problem
     startState = problem.getStartState()
-
+    # bfs uses first in first out so use a queue
     fringe = util.Queue()
+    # make a node with the current state (startstate) and an empty list for the direction path
     node = (startState, [])
+    # push the node on the fringe
     fringe.push(node)
-
+    # make a list with states we already have expanded
     expanded = []
 
+    #check whether the fringe is empty
     while not fringe.isEmpty():
-
+        # get the next state and the direction path we want to check
         (state, directions) = fringe.pop()
 
+        # check if the state is the goal, if so return the direction path
         if problem.isGoalState(state):
             return directions
 
+        # check if we already expanded the state, go back to the while statement
         if state not in expanded:
+            # if not expanded, append to the expanded list
             expanded.append(state)
-            
+            # get the successors of the state
             for (successorState, successorDirection, successorCost) in problem.getSuccessors(state):
+                # if a successor is not expanded yet
                 if successorState not in expanded:
+                    # copy the direction path and add the direction of the successor path
                     newDirections = list(directions)
                     newDirections.append(successorDirection)
+                    # make a new node with the successor state and newly made direction path and push it to the fringe
                     newNode = (successorState, newDirections)
                     fringe.push(newNode)
 
+    # if the fringe is empty return nothing (no solution found)
     return []
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    # get the start state from the problem
     startState = problem.getStartState()
-
+    # ufs uses first in first out, but with priority, so use a priority queue
     fringe = util.PriorityQueue()
+    # make a node with the current state (startstate) and an empty list for the direction path
     node = (startState, [])
+    # push the node on the fringe, with the current total cost (0)
     fringe.push(node, 0)
-
+    # make a list with states we already have expanded
     expanded = []
 
+    #check whether the fringe is empty
     while not fringe.isEmpty():
-
+        # get the next state and the direction path we want to check
         (state, directions) = fringe.pop()
 
+        # check if the state is the goal, if so return the direction path
         if problem.isGoalState(state):
             return directions
 
+        # check if we already expanded the state, go back to the while statement
         if state not in expanded:
+            # if not expanded, append to the expanded list
             expanded.append(state)
-            
+            # get the successors of the state
             for (successorState, successorDirection, successorCost) in problem.getSuccessors(state):
+                # if a successor is not expanded yet
                 if successorState not in expanded:
+                    # copy the direction path and add the direction of the successor path
                     newDirections = list(directions)
                     newDirections.append(successorDirection)
+                    # make a new node with the successor state and newly made direction path
                     newNode = (successorState, newDirections)
+                    # calculate the cost with the direction path and push the node with the cost to the fringe
                     cost = problem.getCostOfActions(newDirections)
                     fringe.push(newNode, cost)
+
+    # if the fringe is empty return nothing (no solution found)
+    return []
 
 def nullHeuristic(state, problem=None):
     """
@@ -185,33 +219,45 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowestf combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    # get the start state from the problem
     startState = problem.getStartState()
-
+    # astar uses first in first out, but with priority, so use a priority queue
     fringe = util.PriorityQueue()
+    # make a node with the current state (startstate) and an empty list for the direction path
     node = (startState, [])
+    # push the node on the fringe, with the current total cost (0) and the estimated path cost (heuristic)
     fringe.push(node, heuristic(startState, problem))
-
+    # make a list with states we already have expanded
     expanded = []
 
+    #check whether the fringe is empty
     while not fringe.isEmpty():
-
+        # get the next state and the direction path we want to check
         (state, directions) = fringe.pop()
 
+        # check if the state is the goal, if so return the direction path
         if problem.isGoalState(state):
             return directions
 
+        # check if we already expanded the state, go back to the while statement
         if state not in expanded:
+            # if not expanded, append to the expanded list
             expanded.append(state)
-            
+            # get the successors of the state
             for (successorState, successorDirection, successorCost) in problem.getSuccessors(state):
+                # if a successor is not expanded yet
                 if successorState not in expanded:
+                    # copy the direction path and add the direction of the successor path
                     newDirections = list(directions)
                     newDirections.append(successorDirection)
+                    # make a new node with the successor state and newly made direction path
                     newNode = (successorState, newDirections)
-
+                    # calculate the cost with the direction path and heuristic, and push the node with the cost to the fringe
                     cost = problem.getCostOfActions(newDirections) + heuristic(successorState,problem)
                     fringe.push(newNode, cost)
 
+    # if the fringe is empty return nothing (no solution found)
+    return []
 
 # Abbreviations
 bfs = breadthFirstSearch
