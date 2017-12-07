@@ -289,20 +289,24 @@ class CornersProblem(search.SearchProblem):
         # in initializing the problem
         "*** YOUR CODE HERE ***"
 
-
     def getStartState(self):
         """
         Returns the start state (in your state space, not the full Pacman state
         space)
         """
         "*** YOUR CODE HERE ***"
-        return (self.startingPosition,[]) #state is pacman's position and array of visited corners, so starting empty.
+        #initialise array of bools to track which corners are visited
+        self.visited = [False,False,False,False]
+        #start state is pacman's position and array of visited corners
+        return (self.startingPosition,self.visited) 
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
-        "*** YOUR CODE HERE ***"        return len(state[1]) == 4
+        "*** YOUR CODE HERE ***"   
+        #when all corners are true and therefore visited     
+        return state[1] == [True,True,True,True]
 
     def getSuccessors(self, state):
         """
@@ -316,21 +320,31 @@ class CornersProblem(search.SearchProblem):
         """
 
         successors = []
-        currentPosition = state[0]
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
-               x, y = currentPosition
-               dx, dy = Actions.directionToVector(action)
-               nextx, nexty = int(x + dx), int(y + dy)
-               hitsWall = self.walls[nextx][nexty]
-               if not hitsWall:
-                    if (nextx,nexty) in self.corners and (nextx,nexty) not in state[1]: #if its a corner not yet found
-                        cornersVisited = state[1] + [(nextx,nexty)]
-                        successors.append((((nextx,nexty),cornersVisited),action,1))
-                    else:
-                        successors.append((((nextx,nexty),state[1]),action,1))
-
+            x, y = state[0]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            #array of bools to track visited corners
+            curVisited = state[1][:]
+            #if you don't hit a wall
+            if not hitsWall:
+                #initialise counter to loop over the corners
+                cor_counter = 0
+                #for every corner
+                for corner in self.corners:
+                    #if the next position is a corner
+                    if corner == (nextx, nexty):
+                        #set that corner to true in visited aray
+                        curVisited[cor_counter]= True
+                        break
+                    #increment corner counter
+                    cor_counter += 1
+                #Add the next state to the successor list
+                successors.append((((nextx, nexty), curVisited), action, 1))
+        
         self._expanded += 1 # DO NOT CHANGE
         return successors
 
@@ -364,13 +378,19 @@ def cornersHeuristic(state, problem):
     corners = problem.corners # These are the corner coordinates
     "*** YOUR CODE HERE ***"
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
+    #initialise a variable to track the minimum manhattan distance to a corner
     mindistance = 1000;
+    #for every corner
     for corner in corners:
+        #get current pacman posiion from the state
         position = state[0]
+        #get the manhattan distance to the corner
         manhattan = abs(corner[0]-position[0])+ abs(corner[1]-position[1])
+        #if smaller than the minimum it is the new minimum
         if manhattan < mindistance:
             mindistance = manhattan
-    return mindistance
+    #return minimum manhattan distance
+    return mindistance 
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
