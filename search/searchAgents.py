@@ -302,8 +302,7 @@ class CornersProblem(search.SearchProblem):
         """
         Returns whether this search state is a goal state of the problem.
         """
-        "*** YOUR CODE HERE ***"
-        return len(state[1]) == 4
+        "*** YOUR CODE HERE ***"        return len(state[1]) == 4
 
     def getSuccessors(self, state):
         """
@@ -321,7 +320,7 @@ class CornersProblem(search.SearchProblem):
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
-               x,y = currentPosition
+               x, y = currentPosition
                dx, dy = Actions.directionToVector(action)
                nextx, nexty = int(x + dx), int(y + dy)
                hitsWall = self.walls[nextx][nexty]
@@ -465,7 +464,7 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    return len(foodGrid.asList())
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"

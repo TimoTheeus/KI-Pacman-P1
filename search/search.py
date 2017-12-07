@@ -189,7 +189,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
     fringe = util.PriorityQueue()
     node = (startState, [])
-    fringe.push(node, 0)
+    fringe.push(node, heuristic(startState, problem))
 
     expanded = []
 
@@ -208,8 +208,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                     newDirections = list(directions)
                     newDirections.append(successorDirection)
                     newNode = (successorState, newDirections)
-                    cost = heuristic(successorState,problem)
-                   # print("ayy lmaooo " + cost)
+
+                    cost = problem.getCostOfActions(newDirections) + heuristic(successorState,problem)
                     fringe.push(newNode, cost)
 
 
