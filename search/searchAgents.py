@@ -407,6 +407,7 @@ def cornersHeuristic(state, problem):
 
         #increase heuristic by the closest corner distance
         heuristic = heuristic + closestDist
+        position = corners[cornerIndex]
         #set closestcorner to true in visitedcorners
         visitedCorners[cornerIndex] = True
     return heuristic 
