@@ -295,10 +295,10 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        #initialise array of bools to track which corners are visited
-        self.visited = [False,False,False,False]
-        #start state is pacman's position and array of visited corners
-        return (self.startingPosition,self.visited) 
+        #initialise list of bools to track which corners are visited (see corners above)
+        visited = [False,False,False,False]
+        #start state is pacman's position and the list of visited corners
+        return (self.startingPosition, visited) 
 
     def isGoalState(self, state):
         """
@@ -327,21 +327,20 @@ class CornersProblem(search.SearchProblem):
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
-            #array of bools to track visited corners
-            curVisited = state[1][:]
+            #copy list of bools to track visited corners
+            curVisited = list(state[1])
             #if you don't hit a wall
             if not hitsWall:
-                #initialise counter to loop over the corners
-                cor_counter = 0
-                #for every corner
+                #counter to loop over the corners
+                cornerCounter = 0
+                #loop for every corner in the problem
                 for corner in self.corners:
-                    #if the next position is a corner
+                    #check if the next position is a corner
                     if corner == (nextx, nexty):
-                        #set that corner to true in visited aray
-                        curVisited[cor_counter]= True
-                        break
+                        #set that corner to true in the visited list
+                        curVisited[cornerCounter]= True
                     #increment corner counter
-                    cor_counter += 1
+                    cornerCounter += 1
                 #Add the next state to the successor list
                 successors.append((((nextx, nexty), curVisited), action, 1))
         
@@ -378,12 +377,10 @@ def cornersHeuristic(state, problem):
     corners = problem.corners # These are the corner coordinates
     "*** YOUR CODE HERE ***"
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-    #initialise a variable to track the minimum manhattan distance to a corner
-    mindistance = 9999999;
     #get current pacman posiion from the state
     position = state[0]
     #corners visited so far
-    visitedCorners = state[1][:]
+    visitedCorners = list(state[1])
     #initialise heuristic value
     heuristic = 0
     
@@ -392,24 +389,29 @@ def cornersHeuristic(state, problem):
     while not visitedCorners == [True, True, True, True]:
         #index of closest corner
         cornerIndex = 0
-        #distance to closest corner
-        closestDist = 99999
-        corcounter = 0
+        #initialise a variable to track the minimum manhattan distance to a corner
+        minDistance = 9999999
+        cornerCounter = 0
         #for all corners
         for corner in corners:
             #if not yet visited see if its the closest corner
-            if not visitedCorners[corcounter]:
-                manhattan_dist = abs(corner[0] - position[0]) + abs(corner[1] - position[1])
-                if manhattan_dist < closestDist:
-                    cornerIndex = corcounter
-                    closestDist = manhattan_dist
-            corcounter += 1
+            if not visitedCorners[cornerCounter]:
+                #formula for the manhattan distance
+                manhattanDistance = abs(corner[0] - position[0]) + abs(corner[1] - position[1])
+                #if the manhattan distance is less than our minimum distance, set the corner index to the counter
+                #and the minimum distance to the manhattan distance
+                if manhattanDistance < minDistance:
+                    cornerIndex = cornerCounter
+                    minDistance = manhattanDistance
+            #increase the corner counter
+            cornerCounter += 1
 
-        #increase heuristic by the closest corner distance
-        heuristic = heuristic + closestDist
+        #increase heuristic by the minimum corner distance
+        heuristic = heuristic + minDistance
         position = corners[cornerIndex]
-        #set closestcorner to true in visitedcorners
+        #set closest corner to true in visitedcorners
         visitedCorners[cornerIndex] = True
+    #return the value of our heuristic distance
     return heuristic 
 
 class AStarCornersAgent(SearchAgent):
