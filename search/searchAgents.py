@@ -379,18 +379,37 @@ def cornersHeuristic(state, problem):
     "*** YOUR CODE HERE ***"
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
     #initialise a variable to track the minimum manhattan distance to a corner
-    mindistance = 1000;
-    #for every corner
-    for corner in corners:
-        #get current pacman posiion from the state
-        position = state[0]
-        #get the manhattan distance to the corner
-        manhattan = abs(corner[0]-position[0])+ abs(corner[1]-position[1])
-        #if smaller than the minimum it is the new minimum
-        if manhattan < mindistance:
-            mindistance = manhattan
-    #return minimum manhattan distance
-    return mindistance 
+    mindistance = 9999999;
+    #get current pacman posiion from the state
+    position = state[0]
+    #corners visited so far
+    visitedCorners = state[1][:]
+    #initialise heuristic value
+    heuristic = 0
+    
+    #this loop sums up the length of the manhattan distances when traversing all corners
+    #when you keep going to the corner with the closest manhattan distance
+    while not visitedCorners == [True, True, True, True]:
+        #index of closest corner
+        cornerIndex = 0
+        #distance to closest corner
+        closestDist = 99999
+        corcounter = 0
+        #for all corners
+        for corner in corners:
+            #if not yet visited see if its the closest corner
+            if not visitedCorners[corcounter]:
+                manhattan_dist = abs(corner[0] - position[0]) + abs(corner[1] - position[1])
+                if manhattan_dist < closestDist:
+                    cornerIndex = corcounter
+                    closestDist = manhattan_dist
+            corcounter += 1
+
+        #increase heuristic by the closest corner distance
+        heuristic = heuristic + closestDist
+        #set closestcorner to true in visitedcorners
+        visitedCorners[cornerIndex] = True
+    return heuristic 
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
