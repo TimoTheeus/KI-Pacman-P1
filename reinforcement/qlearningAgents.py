@@ -43,7 +43,9 @@ class QLearningAgent(ReinforcementAgent):
         ReinforcementAgent.__init__(self, **args)
 
         "*** YOUR CODE HERE ***"
+        #initialise q value counter
         self.q_values = util.Counter()
+
     def getQValue(self, state, action):
         """
           Returns Q(state,action)
@@ -51,6 +53,7 @@ class QLearningAgent(ReinforcementAgent):
           or the Q node value otherwise
         """
         "*** YOUR CODE HERE ***"
+        #return q value
         return self.q_values[(state,action)]
 
 
@@ -62,14 +65,21 @@ class QLearningAgent(ReinforcementAgent):
           terminal state, you should return a value of 0.0.
         """
         "*** YOUR CODE HERE ***"
+        #get all legal actions
         actions = self.getLegalActions(state)
+        #initialise a max q value of -infinity
         maxValue = -99999999
+        #if no legal actions return 0 
         if len(actions)==0:
           return 0
+        #for every legal action
         for action in actions:
           q_value = self.getQValue(state,action)
+          #if the q value is greater than the max value
           if(q_value>maxValue):
+            #its the new maximum
             maxValue = q_value
+        #return max q_value of all legal actions
         return maxValue
 
         util.raiseNotDefined()
@@ -81,14 +91,19 @@ class QLearningAgent(ReinforcementAgent):
           you should return None.
         """
         "*** YOUR CODE HERE ***"
+        #initialise a best action and a max q value of -infinity
         bestAction = None
         maxValue = -999999
+        #get all legal actions
         actions = self.getLegalActions(state)
+        #for all ;egal actions
         for action in actions:
           q_value = self.getQValue(state,action)
+          #if the q value of the action is the new maximum, its the new best action
           if(q_value>maxValue):
             maxValue = q_value
             bestAction = action
+        #return legal action with highest q value
         return bestAction
 
     def getAction(self, state):
@@ -106,13 +121,12 @@ class QLearningAgent(ReinforcementAgent):
         legalActions = self.getLegalActions(state)
         action = None
         "*** YOUR CODE HERE ***"
+        #with a chance of epsilon pick a random action from the legal actions
         if util.flipCoin(self.epsilon):
           action = random.choice(legalActions)
+        #else get the action with the highest q value
         else:
           action = self.computeActionFromQValues(state)
-        return action
-        util.raiseNotDefined()
-
         return action
 
     def update(self, state, action, nextState, reward):
@@ -125,6 +139,7 @@ class QLearningAgent(ReinforcementAgent):
           it will be called on your behalf
         """
         "*** YOUR CODE HERE ***"
+        #simply update using the formula as specified in the slides
         self.q_values[(state,action)] = (1-self.alpha) * self.getQValue(state,action) + self.alpha * (self.discount * self.computeValueFromQValues(nextState) + reward)
 
     def getPolicy(self, state):
@@ -194,8 +209,9 @@ class ApproximateQAgent(PacmanQAgent):
         """
            Should update your weights based on transition
         """
-        "*** YOUR CODE HERE   "     
+        "*** YOUR CODE HERE   "
         util.raiseNotDefined()
+
 
     def final(self, state):
         "Called at the end of each game."
