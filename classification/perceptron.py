@@ -14,6 +14,7 @@
 
 # Perceptron implementation
 import util
+import copy
 PRINT = True
 
 class PerceptronClassifier:
@@ -55,7 +56,12 @@ class PerceptronClassifier:
             print "Starting iteration ", iteration, "..."
             for i in range(len(trainingData)):
                 "*** YOUR CODE HERE ***"
-                util.raiseNotDefined()
+                f = trainingData[i]
+                guessed_label = self.classify([f])[0]
+                training_label = trainingLabels[i]
+                if training_label != guessed_label:
+                	self.weights[training_label] += f
+                	self.weights[guessed_label] -= f
 
     def classify(self, data ):
         """
@@ -80,6 +86,9 @@ class PerceptronClassifier:
         featuresWeights = []
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
-
+        weights = copy.deepcopy(self.weights[label])
+        #util.raiseNotDefined()
+        weights = sorted(weights, key=weights.get,reverse = True)
+        for i in xrange(0, 100):
+        	featuresWeights.append(weights[i])
         return featuresWeights
