@@ -57,11 +57,11 @@ class PerceptronClassifier:
             for i in range(len(trainingData)):
                 "*** YOUR CODE HERE ***"
                 f = trainingData[i]
-                guessed_label = self.classify([f])[0]
-                training_label = trainingLabels[i]
-                if training_label != guessed_label:
-                	self.weights[training_label] += f
-                	self.weights[guessed_label] -= f
+                pickedLabel = self.classify([f])[0]
+                trainingLabel = trainingLabels[i]
+                if trainingLabel != pickedLabel:
+                	self.weights[trainingLabel] += f
+                	self.weights[pickedLabel] -= f
 
     def classify(self, data ):
         """
