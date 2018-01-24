@@ -56,9 +56,9 @@ class PerceptronClassifier:
             print "Starting iteration ", iteration, "..."
             for i in range(len(trainingData)):
                 "*** YOUR CODE HERE ***"
-                statesLabels = trainingData[i]
+                statesLabels  = trainingData[i]
                 trainingLabel = trainingLabels[i]
-                guessedLabel = self.classify([statesLabels])[0]
+                guessedLabel  = self.classify([statesLabels])[0]
 
                 if trainingLabel != guessedLabel:
                 	self.weights[trainingLabel] += statesLabels
