@@ -61,36 +61,53 @@ class MiraClassifier:
         representing a vector of values.
         """
         "*** YOUR CODE HERE ***"
+        #variable to store the best C 
         bestC = Cgrid[0]
+        #variable to track the best C score so far
         bestCScore = -1
-        weights = {} #keep track of weights of all C's
-        for c in Cgrid: #for all c's
-            self.initializeWeightsToZero() #reset self.weights
-            for x in range(self.max_iterations): # for amount of iterations
-                for i in range(len(trainingData)): #for all training data compare classifications
+        #keeps track of weights of all C's
+        weights = {}
+        #for all c's
+        for c in Cgrid:
+            #reset self.weights
+            self.initializeWeightsToZero() 
+            # for amount of iterations
+            for x in range(self.max_iterations):
+                #for all training data compare classifications
+                for i in range(len(trainingData)):
                     f = trainingData[i]
+                    #classify the feature
                     pickedLabel = self.classify([f])[0]
                     trainingLabel = trainingLabels[i]
-                    if pickedLabel!= trainingLabel: #if didnt pick the right label
+                     #if didnt pick the right label
+                    if pickedLabel!= trainingLabel:
+                        #get the weights of training and picked label
                         w_Y = self.weights[trainingLabel]
                         w_chosenY = self.weights[pickedLabel]
+                        #calculate tau according to formula given in assignment description
                         tau = min([c,((w_chosenY-w_Y)*f + 1.0)/(2*(f*f))])
+                        #multiply f with tau 
                         dataCopy = f.copy()
                         for f in dataCopy:
                             dataCopy[f] *= tau
+                        #adjust the weights of the labels
                         self.weights[trainingLabel] += dataCopy #adjust the weights accordingly
                         self.weights[pickedLabel] -= dataCopy
-                        #store the weights of c 
+            #store the weights of c 
             weights[c] = self.weights
-            correctClassifications = 0 
+            #amount of correct classifications for this c 
+            correctClassifications = 0
+            #sum the amount of correct classifications
             for j in range(len(validationLabels)):
                 validationLabel = validationLabels[j]
                 classification = self.classify(validationData[j])
                 if validationLabel == classification:
                     correctClassifications+= 1
+            #if its better than the current best c score, change best c and best c score
             if correctClassifications > bestCScore:
                 bestCScore = correctClassifications
                 bestC = c 
+        #set self.weights to the weights of the best c 
         self.weights = weights[bestC]
 
     def classify(self, data ):
