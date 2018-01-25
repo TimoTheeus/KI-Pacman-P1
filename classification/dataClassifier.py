@@ -72,14 +72,62 @@ def enhancedFeatureExtractorDigit(datum):
     for this datum (datum is of type samples.Datum).
 
     ## DESCRIBE YOUR ENHANCED FEATURES HERE...
-
+    1. amount of continuous regions of inactive pixels
     ##
     """
     features =  basicFeatureExtractorDigit(datum)
 
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    def getNeighbours(pixel):
+        neighbours = []
+        x,y = pixel
+        if x>0:
+            neighbours.append((x-1,y))
+        if x<DIGIT_DATUM_WIDTH-1:
+            neighbours.append((x+1,y))
+        if y>0:
+            neighbours.append((x,y-1))
+        if y<DIGIT_DATUM_HEIGHT-1:
+            neighbours.append((x,y+1))
+        return neighbours
 
+
+    def pixelActive(pixel):
+        x,y= pixel
+        if datum.getPixel(x,y)<2:
+            return False
+        else:
+            return True 
+
+    def floodRegion(location):
+        stack = [location]
+        seenPixels = []
+        while stack:
+            pixel = stack.pop()
+            seenPixels.append(pixel)
+            for neighbour in getNeighbours(pixel):
+                if not pixelActive(neighbour) and neighbour not in seenPixels:
+                    stack.append(neighbour)
+        return seenPixels
+
+    def getAmountOfRegions():
+        regions = set()
+        regionCount = 0
+        for y in range(DIGIT_DATUM_HEIGHT):
+            for x in range(DIGIT_DATUM_WIDTH):
+                if not pixelActive((x,y)) and (x,y) not in regions:
+                    #increase the regioncount 
+                    regionCount +=1
+                    #add a new region 
+                    regions.update(floodRegion((x,y)))
+        return regionCount
+
+    regionCount = getAmountOfRegions()
+    features['regionCount1'] = regionCount == 1
+    features['regionCount2'] = regionCount == 2
+    features['regionCount3'] = regionCount == 3
+
+   # addFeature('regions2', (regionCount >> 2) % 2, 6)
     return features
 
 
