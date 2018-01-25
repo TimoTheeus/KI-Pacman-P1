@@ -72,15 +72,18 @@ def enhancedFeatureExtractorDigit(datum):
     for this datum (datum is of type samples.Datum).
 
     ## DESCRIBE YOUR ENHANCED FEATURES HERE...
-    1. amount of continuous regions of inactive pixels
+    1/2/3 amount of continuous regions of inactive pixels, 3 features for 
+     3 different values since there are  1, 2 or 3 inactive regions in a digit
     ##
     """
     features =  basicFeatureExtractorDigit(datum)
 
     "*** YOUR CODE HERE ***"
+    #gets all neighbours of a certain pixel
     def getNeighbours(pixel):
         neighbours = []
         x,y = pixel
+        #if in range
         if x>0:
             neighbours.append((x-1,y))
         if x<DIGIT_DATUM_WIDTH-1:
@@ -91,7 +94,7 @@ def enhancedFeatureExtractorDigit(datum):
             neighbours.append((x,y+1))
         return neighbours
 
-
+    #check if a pixel is active
     def pixelActive(pixel):
         x,y= pixel
         if datum.getPixel(x,y)<2:
@@ -99,6 +102,7 @@ def enhancedFeatureExtractorDigit(datum):
         else:
             return True 
 
+    #flood a region of inactive pixels and return all pixels in this region
     def floodRegion(location):
         stack = [location]
         seenPixels = []
@@ -110,6 +114,7 @@ def enhancedFeatureExtractorDigit(datum):
                     stack.append(neighbour)
         return seenPixels
 
+    #get amount of different inactive regions
     def getAmountOfRegions():
         regions = set()
         regionCount = 0
@@ -122,12 +127,12 @@ def enhancedFeatureExtractorDigit(datum):
                     regions.update(floodRegion((x,y)))
         return regionCount
 
+    #get the inactive regioncount
     regionCount = getAmountOfRegions()
+    #features for inactive regioncount of 1 2 or 3 
     features['regionCount1'] = regionCount == 1
     features['regionCount2'] = regionCount == 2
     features['regionCount3'] = regionCount == 3
-
-   # addFeature('regions2', (regionCount >> 2) % 2, 6)
     return features
 
 
