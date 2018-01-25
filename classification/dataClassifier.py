@@ -23,7 +23,7 @@ import mira
 import samples
 import sys
 import util
-from pacman import GameState
+from pacman import GameState, Directions
 
 TEST_SET_SIZE = 100
 DIGIT_DATUM_WIDTH=28
@@ -172,7 +172,42 @@ def enhancedPacmanFeatures(state, action):
     """
     features = util.Counter()
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #set the new state and variables
+    state = state.generateSuccessor(0, action)
+    pacman = state.getPacmanPosition()
+    dotList = state.getCapsules()
+    foodList = state.getFood().asList()
+    ghostList = state.getGhostPositions()
+
+    #add the stop action feature
+    features['Stop'] = 1.0 if action == Directions.STOP else 0
+
+    #add amount of food and capsule power pellets
+    features['foodCount'] = state.getNumFood()
+
+    #calculate the lowest distance between pacman and a food pellet
+    closestFood = sys.maxint
+    for food in foodList:
+        closestFood = min(closestFood, util.manhattanDistance(pacman, food))
+    closestFood = 1.0 / closestFood if closestFood != sys.maxint and closestFood != 0  else 0.1
+
+    #calculate the lowest distance between pacman and a capsule power pellet
+    closestDot = sys.maxint
+    for dot in dotList:
+        closestDot = min(closestDot, util.manhattanDistance(pacman, dot))   
+    closestDot = 1.0 / closestDot if closestDot != sys.maxint and closestDot != 0  else 0.1
+
+    #calculate the lowest distance between pacman and a ghost
+    closestGhost = sys.maxint
+    for ghost in ghostList:
+        closestGhost = min(closestGhost, util.manhattanDistance(pacman, ghost))
+    closestGhost = 1.0 / closestGhost if closestGhost != sys.maxint and closestGhost != 0  else 0.1
+
+    #add these distances to the features
+    features['closestDot'] = closestDot
+    features['closestFood'] = closestFood
+    features['closestGhost'] = closestGhost
+
     return features
 
 
