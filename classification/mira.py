@@ -85,7 +85,7 @@ class MiraClassifier:
                         w_Y = self.weights[trainingLabel]
                         w_chosenY = self.weights[pickedLabel]
                         #calculate tau according to formula given in assignment description
-                        tau = min([c,((w_chosenY-w_Y)*f + 1.0)/(2*(f*f))])
+                        tau = min(c,((w_chosenY-w_Y)*f + 1.0)/(2*(f*f)))
                         #multiply f with tau 
                         dataCopy = f.copy()
                         for f in dataCopy:
